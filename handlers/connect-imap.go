@@ -46,6 +46,13 @@ func ConnectToImap(email string, token string) (*client.Client, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect: %v", err)
 	}
+
+	caps, err := c.Capability()
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch capabilities: %v", err)
+	}
+	fmt.Println("Server Capabilities: ", caps)
+
 	
 	auth := &OAuthBearer{User: email, Token: token}
 	loginError := c.Authenticate(auth)

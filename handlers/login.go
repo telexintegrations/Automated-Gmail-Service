@@ -22,11 +22,8 @@ var googleOAuthConfig = &oauth2.Config{
 	ClientID:     clientId,
 	ClientSecret: clientSecret,
 	RedirectURL:  redirectUrl,
-	Scopes: []string{
-		"https://mail.google.com/",
-		"email", "profile",
-	},
-	Endpoint: google.Endpoint,
+	Scopes:       []string{"email", "profile"},
+	Endpoint:     google.Endpoint,
 }
 
 var tokenStore = make(map[string]*oauth2.Token)
@@ -85,42 +82,6 @@ func CallbackHandler(c *gin.Context) {
 	go EmailHandler(userEmail, token.AccessToken)
 	c.JSON(http.StatusOK, gin.H{"message": "Login successful. Email listener started", "email": userEmail})
 }
-
-// func CheckTokenHandler(c *gin.Context) {
-// 	var request EmailRequest
-
-// 	err := c.ShouldBindJSON(&request)
-// 	if err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
-// 		return
-// 	}
-
-// 	token, exists := tokenStore["user"]
-// 	if !exists || token.AccessToken == "" {
-// 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized access"})
-// 		return
-// 	}
-
-// 	if token.Expiry.Before(time.Now()) {
-// 		newToken, err := RefreshAccessToken(token.RefreshToken)
-// 		if err != nil {
-// 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to refresh token"})
-// 			return
-// 		}
-// 		tokenStore["user"] = newToken
-// 		token = newToken
-// 	}
-
-// 	_, connectErr := ConnectToImap(request.Email, token.AccessToken)
-// 	if connectErr != nil {
-// 		c.JSON(http.StatusInternalServerError, gin.H{"error": "IMAP authentication failed", "details": connectErr.Error()})
-// 		return
-// 	}
-// 	c.JSON(http.StatusOK, gin.H{"message": "Successfully authenticated with IMAP"})
-
-// 	go EmailHandler(request)
-
-// }
 
 func RefreshAccessToken(refreshToken string) (*oauth2.Token, error) {
 	tokenSource := googleOAuthConfig.TokenSource(context.Background(), &oauth2.Token{RefreshToken: refreshToken})
