@@ -16,9 +16,11 @@ func main() {
 
 	r.Use(middleware.SetUpCORS())
 
-	r.GET("/auth/login", handlers.LoginHandler)
+	r.POST("/auth/login", handlers.LoginNoOauthHandler)
 
-	r.GET("/callback", handlers.CallbackHandler)
+	// r.GET("/auth/oauth", handlers.LoginHandler)
+
+	// r.GET("/callback", handlers.CallbackHandler)
 
 	// r.POST("/check-emails", handlers.CheckTokenHandler)
 

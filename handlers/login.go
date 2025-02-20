@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"hng-stage3-task-automated-email-service/config"
 	"net/http"
-	"time"
+	// "time"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
@@ -26,7 +26,7 @@ var googleOAuthConfig = &oauth2.Config{
 	Endpoint:     google.Endpoint,
 }
 
-var tokenStore = make(map[string]*oauth2.Token)
+// var tokenStore = make(map[string]*oauth2.Token)
 
 func LoginHandler(c *gin.Context) {
 	fmt.Println(clientId, clientSecret, redirectUrl)
@@ -61,23 +61,26 @@ func CallbackHandler(c *gin.Context) {
 		return
 	}
 
-	tokenStore["user"] = token
+	c.SetCookie("auth-token", token.AccessToken, 3600, "/", "", true, true)
+	c.SetCookie("refresh-token", token.RefreshToken, 0, "/", "", true, true)
 
-	token, exists := tokenStore["user"]
-	if !exists || token.AccessToken == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized access"})
-		return
-	}
+	// tokenStore["user"] = token
 
-	if token.Expiry.Before(time.Now()) {
-		newToken, err := RefreshAccessToken(token.RefreshToken)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to refresh token"})
-			return
-		}
-		tokenStore["user"] = newToken
-		token = newToken
-	}
+	// token, exists := tokenStore["user"]
+	// if !exists || token.AccessToken == "" {
+	// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized access"})
+	// 	return
+	// }
+
+	// if token.Expiry.Before(time.Now()) {
+	// 	newToken, err := RefreshAccessToken(token.RefreshToken)
+	// 	if err != nil {
+	// 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to refresh token"})
+	// 		return
+	// 	}
+	// 	tokenStore["user"] = newToken
+	// 	token = newToken
+	// }
 
 	go EmailHandler(userEmail, token.AccessToken)
 	c.JSON(http.StatusOK, gin.H{"message": "Login successful. Email listener started", "email": userEmail})

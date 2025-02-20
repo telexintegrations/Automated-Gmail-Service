@@ -42,6 +42,6 @@ func SendAutoReply(email string, token string, to string) error {
 	if err != nil {
 		return fmt.Errorf("failed to send email: %v", err)
 	}
-	fmt.Printf("Autoreply sent to: %v", to)
+	fmt.Println("Autoreply sent to: %v", to)
 	return nil
 }
