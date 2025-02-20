@@ -14,7 +14,7 @@ func SetUpCORS() gin.HandlerFunc {
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
-		MaxAge:           12 * time.Hour, // Cache preflight requests for 12 hours
+		MaxAge:           12 * time.Hour,
 	})
 }
 

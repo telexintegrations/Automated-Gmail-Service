@@ -71,6 +71,25 @@ func FetchEmailSender(c *client.Client, ids []uint32) ([]string, error) {
 	return senders, nil
 }
 
+
+func ProcessMails(email string, token string, username string, senders []string) {
+	for _, sender := range senders {
+		fmt.Printf("Sending auto-response to: %s\n", sender)
+		SendAutoReply(email, token, username, sender)
+	}
+}
+
+func MarkEmailsAsSeen(c *client.Client, ids []uint32) error {
+	seqSet := new(imap.SeqSet)
+	seqSet.AddNum(ids...)
+
+	item := imap.FormatFlagsOp(imap.AddFlags, true)
+	flags := []interface{}{imap.SeenFlag}
+
+	return c.Store(seqSet, item, flags, nil)
+}
+
+
 // func CheckNewEmails(c *client.Client, lastUID uint32) ([]uint32, error) {
 // 	mbox, err := c.Select("INBOX", false)
 // 	if err != nil {
@@ -177,20 +196,3 @@ func FetchEmailSender(c *client.Client, ids []uint32) ([]string, error) {
 // 	fmt.Printf("Found senders: %v\n", senders)
 // 	return senders, nil
 // }
-
-func ProcessMails(email string, token string, username string, senders []string) {
-	for _, sender := range senders {
-		fmt.Printf("Sending auto-response to: %s\n", sender)
-		SendAutoReply(email, token, username, sender)
-	}
-}
-
-func MarkEmailsAsSeen(c *client.Client, ids []uint32) error {
-	seqSet := new(imap.SeqSet)
-	seqSet.AddNum(ids...)
-
-	item := imap.FormatFlagsOp(imap.AddFlags, true)
-	flags := []interface{}{imap.SeenFlag}
-
-	return c.Store(seqSet, item, flags, nil)
-}
