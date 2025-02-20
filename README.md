@@ -5,7 +5,7 @@ This API automatically sends an email reply when a message is received. It is de
 ## 🚀 Features
 
 - 📩 **Auto-reply emails** to incoming messages
-- 🔄 **Preconfigured SMTP settings** for Gmail and Outlook
+- 🔄 **Preconfigured SMTP settings** for Gmail
 - 🔐 **Supports Two-Factor Authentication (2FA) users** via App Passwords
 - 🌍 **Cross-Origin Resource Sharing (CORS) support**
 
