@@ -7,6 +7,7 @@ import (
 )
 
 type LoginNoAuthRequest struct {
+	Username string `json:"username"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
@@ -14,8 +15,14 @@ type LoginNoAuthRequest struct {
 func LoginNoOauthHandler(c *gin.Context) {
 	var loginReq LoginNoAuthRequest
 
-	if err := c.ShouldBindJSON(&loginReq); err != nil {
+	err := c.ShouldBindJSON(&loginReq)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request", "details": err.Error()})
+		return
+	}
+	
+	if loginReq.Username == "" || loginReq.Email == "" || loginReq.Password == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Login failed", "details": "Ensure username, email and password are set."})
 		return
 	}
 
@@ -26,7 +33,7 @@ func LoginNoOauthHandler(c *gin.Context) {
 	}
 	defer conn.Logout()
 
-	go EmailNoAuthHandler(loginReq.Email, loginReq.Password)
+	go EmailNoAuthHandler(loginReq.Email, loginReq.Password, loginReq.Username)
 
 	log.Println("User logged in:", loginReq.Email)
 	c.JSON(http.StatusOK, gin.H{"message": "Login successful.", "details": "Email monitoring started. New inbox mails would receive automated responses."})

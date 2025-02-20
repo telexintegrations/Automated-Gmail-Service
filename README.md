@@ -77,3 +77,12 @@ Go to Microsoft Security Settings.
 Click Create a new app password.
 Copy the password and use it for your API requests.
 ```
+
+#### A successful authentication response would look like:
+
+```
+{
+  "details":"Email monitoring started. New inbox mails would receive automated responses.",
+  "message":"Login successful."
+}
+```

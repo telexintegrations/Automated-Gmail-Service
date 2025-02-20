@@ -15,23 +15,18 @@ func CheckNewEmails(c *client.Client) ([]uint32, error) {
 		return nil, fmt.Errorf("failed to select INBOX: %v", err)
 	}
 
-	// criteria := &imap.SearchCriteria{WithoutFlags: []string{"\\Seen"}}
-	criteria := imap.NewSearchCriteria()
-	criteria.Since = time.Now().Add(-1 * time.Minute)
-	criteria.WithoutFlags = []string{imap.SeenFlag}
-	criteria.Larger = 1
+	criteria := &imap.SearchCriteria{WithFlags: []string{"\\Seen"}}
 
 	ids, err := c.Search(criteria)
-	// ids, err := c.Search(criteria)
+	// ids, err := c.UidSearch(criteria)
 	if err != nil {
 		log.Println("Retrying IMAP search...")
 		time.Sleep(5 * time.Second)
 	}
 	if len(ids) == 0 {
-		log.Println("No emails found. Retrying search within the last one minute...")
-		// criteria := &imap.SearchCriteria{WithFlags: []string{"UNSEEN"}, Since: time.Now().Add(-60 * time.Second)}
+		log.Println("No emails found. Retrying search....")
+		criteria := &imap.SearchCriteria{WithFlags: []string{"\\Seen"}}
 		ids, err := c.Search(criteria)
-		// ids, err := c.Search(criteria)
 		if err != nil {
 			return nil, fmt.Errorf("failed to search emails: %v", err)
 		}
@@ -68,10 +63,10 @@ func FetchEmailSender(c *client.Client, ids []uint32) ([]string, error) {
 	return senders, nil
 }
 
-func ProcessMails(email string, token string, senders []string) {
+func ProcessMails(email string, token string, username string, senders []string) {
 	for _, sender := range senders {
 		fmt.Printf("Sending auto-response to: %s\n", sender)
-		SendAutoReply(email, token, sender)
+		SendAutoReply(email, token, username, sender)
 	}
 }
 

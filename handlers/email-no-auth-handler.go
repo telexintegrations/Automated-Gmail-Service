@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func EmailNoAuthHandler(email string, password string) {
+func EmailNoAuthHandler(email string, password string, username string) {
 	c, err := ConnectToImapWithPassword(email, password)
 	if err != nil {
 		log.Println("IMAP Connection Error:", err)
@@ -50,8 +50,8 @@ func EmailNoAuthHandler(email string, password string) {
 				time.Sleep(time.Second * 10)
 				continue
 			}
-			
-			ProcessMails(email, password, senders)
+
+			ProcessMails(email, password, username, senders)
 
 			for _, id := range newMails {
 				processedEmails[id] = true
