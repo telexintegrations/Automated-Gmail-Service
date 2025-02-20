@@ -29,7 +29,7 @@ func SendAutoReply(email string, token string, username string, to string) error
 
 	var capitalisedUsername = Capitalise(username)
 
-	subject := "Thank You for Your Messsage!"
+	subject := "Thank You for Your Message!"
 	body := fmt.Sprintf("Hello, \n\nThank you for reaching out to us. We have received your message and will get back to you as soon as possible. \n\nBest regards, \n%s", capitalisedUsername)
 
 	message := gomail.NewMessage()

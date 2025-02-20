@@ -1,11 +1,13 @@
 # 📧 Email Auto-Reply API
 
-This API automatically sends an email reply when a message is received. It is designed to work with **Gmail** and **Outlook** users, making integration simple by handling SMTP configuration internally.
+This API automatically sends an email reply when a message is received. It is designed to work with **Gmail** users, making integration simple by handling SMTP configuration internally.
+
+It's hosted on [https://automated-gmail-service.onrender.com](https://automated-gmail-service.onrender.com)
 
 ## 🚀 Features
 
 - 📩 **Auto-reply emails** to incoming messages
-- 🔄 **Preconfigured SMTP settings** for Gmail and Outlook
+- 🔄 **Preconfigured SMTP settings** for Gmail
 - 🔐 **Supports Two-Factor Authentication (2FA) users** via App Passwords
 - 🌍 **Cross-Origin Resource Sharing (CORS) support**
 
@@ -36,7 +38,7 @@ go run main.go
 Endpoint:
 
 ```
-POST /start-email-listener
+POST /auth/login
 ```
 
 ##### Request Body Example:
@@ -51,7 +53,7 @@ POST /start-email-listener
 
 #### 🔐 Using the API with 2FA-Enabled Accounts
 
-We advise that don't use your regular email password. Instead, on your device navigate into Gmail and click on 'Manage your Google Account'. Locate the Security tab and click on it. Ensure you have enabled 2-step verification and generate an App Password from your email provider. This is what you'd use as your-app-password.
+We advise that **don't** use your regular **email password**. Instead, on your device navigate into Gmail and click on 'Manage your Google Account'. Locate the Security tab and click on it. Ensure you have enabled 2-step verification and generate an App Password from your email provider. This is what you'd use as your-app-password.
 
 #### 🛠️ What is an App Password?
 
