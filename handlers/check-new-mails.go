@@ -9,31 +9,39 @@ import (
 	"github.com/emersion/go-imap/client"
 )
 
-func CheckNewEmails(c *client.Client) ([]uint32, error) {
+func CheckNewEmails(c *client.Client, lastUID uint32) ([]uint32, error) {
 	_, err := c.Select("INBOX", false)
 	if err != nil {
 		return nil, fmt.Errorf("failed to select INBOX: %v", err)
 	}
 
-	criteria := &imap.SearchCriteria{WithFlags: []string{"\\Seen"}}
+	checkErr := c.Check()
+	if checkErr != nil {
+		log.Println("Error checking for emails: ", checkErr)
+	}
 
+	criteria := imap.NewSearchCriteria()
+	criteria.WithoutFlags = []string{"\\Seen"}
+	// criteria := &imap.SearchCriteria{WithFlags: []string{"\\Seen"}}
 	ids, err := c.Search(criteria)
-	// ids, err := c.UidSearch(criteria)
 	if err != nil {
 		log.Println("Retrying IMAP search...")
 		time.Sleep(5 * time.Second)
-	}
-	if len(ids) == 0 {
-		log.Println("No emails found. Retrying search....")
-		criteria := &imap.SearchCriteria{WithFlags: []string{"\\Seen"}}
-		ids, err := c.Search(criteria)
+
+		ids, err = c.Search(criteria)
 		if err != nil {
 			return nil, fmt.Errorf("failed to search emails: %v", err)
 		}
-		return ids, nil
 	}
 
-	return ids, nil
+	var newEmails []uint32
+	for _, id := range ids {
+		if id > lastUID {
+			newEmails = append(newEmails, id)
+		}
+	}
+
+	return newEmails, nil
 }
 
 func FetchEmailSender(c *client.Client, ids []uint32) ([]string, error) {
@@ -62,6 +70,113 @@ func FetchEmailSender(c *client.Client, ids []uint32) ([]string, error) {
 
 	return senders, nil
 }
+
+// func CheckNewEmails(c *client.Client, lastUID uint32) ([]uint32, error) {
+// 	mbox, err := c.Select("INBOX", false)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("failed to select INBOX: %v", err)
+// 	}
+
+// 	if mbox.Messages == 0 {
+// 		fmt.Printf("No messages in inbox")
+// 		return nil, nil
+// 	}
+
+// 	seqSet := new(imap.SeqSet)
+// 	if mbox.Messages > 50 {
+// 		seqSet.AddRange(mbox.Messages-50, mbox.Messages)
+// 	} else {
+// 		seqSet.AddRange(1, mbox.Messages)
+// 	}
+
+// 	items := []imap.FetchItem{imap.FetchEnvelope, imap.FetchFlags, imap.FetchUid}
+// 	messages := make(chan *imap.Message, 50)
+// 	done := make(chan error, 1)
+
+// 	go func() {
+// 		done <- c.Fetch(seqSet, items, messages)
+// 	}()
+
+// 	var newEmails []uint32
+
+// 	for msg := range messages {
+// 		if msg == nil {
+// 			fmt.Println("Received nil message")
+// 			continue
+// 		}
+
+// 		isUnseen := true
+// 		for _, flag := range msg.Flags {
+// 			if flag == imap.SeenFlag {
+// 				isUnseen = false
+// 				break
+// 			}
+// 		}
+
+// 		if isUnseen && msg.Uid > lastUID {
+// 			newEmails = append(newEmails, msg.Uid)
+// 		}
+// 	}
+
+// 	if err := <-done; err != nil {
+// 		return nil, fmt.Errorf("failed to fetch emails: %v", err)
+// 	}
+
+// 	if len(newEmails) == 0 {
+// 		fmt.Println("No new unseen emails found.")
+// 	}
+
+// 	return newEmails, nil
+// }
+
+// func FetchEmailSender(c *client.Client, ids []uint32) ([]string, error) {
+// 	if len(ids) == 0 {
+// 		fmt.Printf("No email IDs for fetching senders")
+// 		return nil, nil
+// 	}
+
+// 	seqset := new(imap.SeqSet)
+// 	seqset.AddNum(ids...)
+
+// 	items := []imap.FetchItem{imap.FetchEnvelope, imap.FetchFlags, imap.FetchUid}
+
+// 	messages := make(chan *imap.Message, len(ids))
+// 	done := make(chan error, 1)
+
+// 	go func() {
+// 		done <- c.Fetch(seqset, items, messages)
+// 	}()
+
+// 	senders := []string{}
+
+// 	for msg := range messages {
+// 		if msg == nil {
+// 			fmt.Println("Warning: Received nil message")
+// 			continue
+// 		}
+
+// 		if msg.Envelope == nil {
+// 			fmt.Println("Warning: Received nil message", msg.Uid)
+// 			continue
+// 		}
+
+// 		if len(msg.Envelope.From) == 0 {
+// 			fmt.Println("Warning: Received nil message", msg.Uid)
+// 			continue
+// 		}
+
+// 		senderEmail := msg.Envelope.From[0].Address()
+// 		fmt.Printf("Found sender: %s\n", senderEmail)
+// 		senders = append(senders, senderEmail)
+// 	}
+
+// 	if err := <-done; err != nil {
+// 		return nil, fmt.Errorf("error fetching emails: %v", err)
+// 	}
+
+// 	fmt.Printf("Found senders: %v\n", senders)
+// 	return senders, nil
+// }
 
 func ProcessMails(email string, token string, username string, senders []string) {
 	for _, sender := range senders {

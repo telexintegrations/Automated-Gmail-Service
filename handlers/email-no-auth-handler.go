@@ -14,7 +14,7 @@ func EmailNoAuthHandler(email string, password string, username string) {
 	}
 	defer c.Logout()
 
-	processedEmails := make(map[uint32]bool)
+	var lastUID uint32
 
 	for {
 		err := c.Check()
@@ -22,7 +22,7 @@ func EmailNoAuthHandler(email string, password string, username string) {
 			log.Println("Error checking for emails: ", err)
 		}
 
-		ids, err := CheckNewEmails(c)
+		ids, err := CheckNewEmails(c, lastUID)
 		fmt.Printf("Found mails with ids: %v\n", ids)
 
 		if err != nil {
@@ -31,17 +31,8 @@ func EmailNoAuthHandler(email string, password string, username string) {
 			continue
 		}
 
-		var newMails []uint32
-		for _, id := range ids {
-			if !processedEmails[id] {
-				newMails = append(newMails, id)
-			}
-		}
-
-		if len(newMails) == 0 {
+		if len(ids) == 0 {
 			fmt.Println("No new emails found")
-			time.Sleep(time.Second * 60)
-			continue
 		} else {
 			senders, err := FetchEmailSender(c, ids)
 			fmt.Printf("senders: %v\n", senders)
@@ -53,13 +44,13 @@ func EmailNoAuthHandler(email string, password string, username string) {
 
 			ProcessMails(email, password, username, senders)
 
-			for _, id := range newMails {
-				processedEmails[id] = true
-			}
-
-			markErr := MarkEmailsAsSeen(c, newMails)
+			markErr := MarkEmailsAsSeen(c, ids)
 			if markErr != nil {
 				log.Println("Error marking emails as seen: ", markErr)
+			}
+
+			if len(ids) > 0 {
+				lastUID = ids[len(ids)-1]
 			}
 		}
 
