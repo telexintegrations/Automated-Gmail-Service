@@ -17,7 +17,7 @@ var responseData = ResponseData{
 		},
 		"descriptions": map[string]any{
 			"app_name":         "Automated Email Service",
-			"app_description":  "This is an automated email service that when integrated to a user's email, sends an automated mail to every new mail sender.",
+			"app_description":  "This is an automated email service that when integrated to a user's email, sends an automated mail to every new mail sender. It can be started by typing /start-mail",
 			"app_logo":         "https://www.shutterstock.com/image-vector/single-black-email-refresh-line-600nw-2455287007.jpg",
 			"app_url":          "https://automated-gmail-service.onrender.com",
 			"background_color": "#fff",
