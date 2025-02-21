@@ -23,7 +23,6 @@ type Setting struct {
 	Default  string `json:"default"`
 }
 
-
 func sendWebhookNotification(payload gin.H, webhook string, once *sync.Once) {
 	once.Do(func() {
 		jsonData, err := json.Marshal(payload)
