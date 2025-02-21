@@ -14,8 +14,11 @@ func main() {
 
 	r.Use(middleware.SetUpCORS())
 
-	r.POST("/target_url", handlers.LoginNoOauthHandler)
-	r.GET("/integration.json", handlers.ReturnIntegrationJSON)
+	r.POST("/auth/login", handlers.LoginNoOauthHandler)
+
+	r.POST("/target_url", handlers.LoginTelex)
+
+	r.GET("/integration", handlers.ReturnIntegrationJSON)
 
 	fmt.Println("Server running on port 8080...")
 	log.Fatal(r.Run(":8080"))
