@@ -38,7 +38,7 @@ func sendWebhookNotification(payload gin.H, webhook string) {
 		// }
 		// defer resp.Body.Close()
 
-		client := &http.Client{Timeout: 15 * time.Second}
+		client := &http.Client{Timeout: 5 * time.Second}
 		req, err := http.NewRequest("POST", webhook, bytes.NewBuffer(jsonData))
 		if err != nil {
 			log.Println("Error creating webhook request:", err)
