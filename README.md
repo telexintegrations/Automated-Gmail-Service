@@ -84,7 +84,27 @@ Copy the password and use it for your API requests.
 
 ```
 {
-  "details":"Email monitoring started. New inbox mails would receive automated responses.",
-  "message":"Login successful."
+    "event_name": "Handling Emails",
+    "message": "Login successful. Type a message to start email monitoring service.",
+    "status": "success",
+    "username": "Automated Email Service"
 }
 ```
+
+### **How to use**
+
+#### Install the integration using its JSON URL at:
+
+```
+https://automated-gmail-service.onrender.com/integration
+```
+#### Toggle the integration service ON and click on the MANAGE APP button. Choose settings and fill in the required fields:
+```
+Username: YourName
+Email: youremail@gmail.com
+Password: Your-Gmail-app-password
+```
+Then, click on **'Save Settings'**
+
+#### Go to Channels
+Configure any of your channels to run this App Service. Then trigger the automated email service simply by sending a message in that Telex channel. Every new mail that comes into your mailbox will get an automated response.
