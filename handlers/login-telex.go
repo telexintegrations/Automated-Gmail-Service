@@ -81,20 +81,23 @@ func LoginTelex(c *gin.Context) {
 		conn, err := ConnectToImapWithPassword(email, password)
 		if err != nil {
 			response := gin.H{"message": "Authentication failed " + err.Error(), "status": "error", "username": "Automated Email Service", "event_name": "Handling Emails"}
+			sendWebhookNotification(response, webhook)
 			c.JSON(http.StatusUnauthorized, response)
 			return
 		}
 		defer conn.Logout()
-
+		
 		go EmailNoAuthHandler(email, password, username)
-
+		
 		log.Println("User logged in: ", email)
 		log.Println("Email monitoring service started successfully.")
 		response := gin.H{"status": "success", "message": "Login successful. Email monitoring started. New inbox mails would receive automated responses.", "username": "Automated Email Service", "event_name": "Handling Emails"}
+		sendWebhookNotification(response, webhook)
 		c.JSON(http.StatusOK, response)
-	} else {
+		} else {
 		log.Println("Type /start-mail to start email monitoring service.")
 		response := gin.H{"status": "error", "message": "Type /start-mail to start email monitoring service.", "username": "Automated Email Service", "event_name": "Handling Emails"}
+		sendWebhookNotification(response, webhook)
 		c.JSON(http.StatusBadRequest, response)
 	}
 }
