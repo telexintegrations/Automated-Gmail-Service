@@ -38,7 +38,7 @@ go run main.go
 Endpoint:
 
 ```
-POST /auth/login
+POST /target_url
 ```
 
 ##### Request Body Example:
