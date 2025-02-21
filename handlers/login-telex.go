@@ -18,12 +18,6 @@ type Setting struct {
 	Default  string `json:"default"`
 }
 
-type LoginTelexRequestBody struct {
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
 func LoginTelex(c *gin.Context) {
 	var loginReq TelexRequestBody
 
@@ -45,25 +39,32 @@ func LoginTelex(c *gin.Context) {
 			password = setting.Default
 		}
 	}
+	
+	log.Printf("Username: %s", username)
 
 	message := loginReq.Message
-
 	log.Println("Message received: ", message)
 
-	if username == "" || email == "" || password == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Login failed. Ensure username, email and password are set.", "status": "error", "username": "Automated Email Service", "event_name": "Handling Emails"})
-		return
+	if message != "" {
+		if username == "" || email == "" || password == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Login failed. Ensure username, email and password are set.", "status": "error", "username": "Automated Email Service", "event_name": "Handling Emails"})
+			return
+		}
+	
+		conn, err := ConnectToImapWithPassword(email, password)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"message": "Authentication failed " + err.Error(), "status": "error", "username": "Automated Email Service", "event_name": "Handling Emails"})
+			return
+		}
+		defer conn.Logout()
+	
+		go EmailNoAuthHandler(email, password, username)
+	
+		log.Println("User logged in: ", email)
+		log.Println("Email monitoring service started successfully.")
+		c.JSON(http.StatusOK, gin.H{"message": "Login successful. Email monitoring started. New inbox mails would receive automated responses.", "username": "Automated Email Service", "status": "success", "event_name": "Handling Emails"})
 	}
 
-	conn, err := ConnectToImapWithPassword(email, password)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"message": "Authentication failed " + err.Error(), "status": "error", "username": "Automated Email Service", "event_name": "Handling Emails"})
-		return
-	}
-	defer conn.Logout()
-
-	go EmailNoAuthHandler(email, password, username)
-
-	log.Println("User logged in:", email)
-	c.JSON(http.StatusOK, gin.H{"message": "Login successful. Email monitoring started. New inbox mails would receive automated responses.", "username": "Automated Email Service", "status": "success", "event_name": "Handling Emails"})
+	log.Println("Type a message to start email monitoring service.")
+	c.JSON(http.StatusBadRequest, gin.H{"message": "Login successful. Type a message to start email monitoring service.", "username": "Automated Email Service", "status": "success", "event_name": "Handling Emails"})
 }
