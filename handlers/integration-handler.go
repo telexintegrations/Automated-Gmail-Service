@@ -23,7 +23,6 @@ var responseData = ResponseData{
 			"background_color": "#fff",
 		},
 		"is_active":            true,
-		// "integration_type":     "output",
 		"integration_type":     "modifier",
 		"integration_category": "Email & Messaging",
 		"key_features":         []string{"Sends an automated mail to every new mail sender"},
