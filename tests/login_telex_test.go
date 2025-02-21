@@ -25,7 +25,7 @@ func TestLoginTelex_Success(t *testing.T) {
 	router.POST("/target_url", handlers.LoginTelex)
 
 	requestBody := map[string]any{
-		"message": "Start monitoring",
+		"message": "/start-mail",
 		"settings": []map[string]any{
 			{"label": "username", "type": "text", "required": true, "default": "testuser"},
 			{"label": "email", "type": "text", "required": true, "default": "valid@gmail.com"},
@@ -50,7 +50,7 @@ func TestLoginTelex_MissingFields(t *testing.T) {
 	router.POST("/target_url", handlers.LoginTelex)
 
 	requestBody := map[string]any{
-		"message": "Start monitoring",
+		"message": "/start-mail",
 		"settings": []map[string]any{
 			{"label": "username", "type": "text", "required": true, "default": "testuser"},
 			// Left out email on purpose...
@@ -92,7 +92,7 @@ func TestLoginTelex_AuthFailure(t *testing.T) {
 
 	// Invalid login credentials...
 	requestBody := map[string]any{
-		"message": "Start monitoring",
+		"message": "/start-mail",
 		"settings": []map[string]any{
 			{"label": "username", "type": "text", "required": true, "default": "testuser"},
 			{"label": "email", "type": "text", "required": true, "default": "invalid@gmail.com"},

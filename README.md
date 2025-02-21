@@ -107,4 +107,4 @@ Password: Your-Gmail-app-password
 Then, click on **'Save Settings'**
 
 #### Go to Channels
-Configure any of your channels to run this App Service. Then trigger the automated email service simply by sending a message in that Telex channel. Every new mail that comes into your mailbox will get an automated response.
+Configure any of your channels to run this App Service. Then trigger the automated email service simply by sending the message "/start-mail" in that Telex channel. Every new mail that comes into your mailbox will get an automated response.
