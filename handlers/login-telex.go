@@ -97,7 +97,6 @@ func LoginTelex(c *gin.Context) {
 	if formattedMessage == "" {
 		log.Println("Type /start-mail to start email monitoring service.")
 		response := gin.H{"status": "error", "message": "Type /start-mail to start email monitoring service.", "username": "Automated Email Service", "event_name": "Handling Emails"}
-		sendWebhookNotification(response, webhook, &once)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	} else if formattedMessage == "/start-mail" {
