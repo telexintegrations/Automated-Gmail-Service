@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"hng-stage3-task-automated-email-service/handlers"
 	"hng-stage3-task-automated-email-service/middleware"
 	"log"
-	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -14,7 +14,8 @@ func main() {
 
 	r.Use(middleware.SetUpCORS())
 
-	r.POST("/auth/login", handlers.LoginNoOauthHandler)
+	r.POST("/target_url", handlers.LoginNoOauthHandler)
+	r.GET("/integration.json", handlers.ReturnIntegrationJSON)
 
 	fmt.Println("Server running on port 8080...")
 	log.Fatal(r.Run(":8080"))
