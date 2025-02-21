@@ -47,6 +47,12 @@ var responseData = ResponseData{
 				"required": true,
 				"default":  "",
 			},
+			{
+				"label":    "webhook",
+				"type":     "text",
+				"required": true,
+				"default":  "",
+			},
 		},
 		"target_url": "https://automated-gmail-service.onrender.com/target_url",
 	},
