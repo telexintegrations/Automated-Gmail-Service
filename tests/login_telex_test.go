@@ -133,5 +133,5 @@ func TestLoginTelex_MissingMessage(t *testing.T) {
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusBadRequest, w.Code)
-	assert.Contains(t, w.Body.String(), "Type a message to start email monitoring service.")
+	assert.Contains(t, w.Body.String(), "Type /start-mail to start email monitoring service.")
 }

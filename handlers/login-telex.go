@@ -23,7 +23,7 @@ func LoginTelex(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&loginReq)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request: " + err.Error(), "status": "error", "username": "Automated Email Service", "event_name": "Handling Emails"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request: " + err.Error(), "status": "error", "username": "Automated Email Service", "event_name": "Handling Emails"})
 		return
 	}
 
@@ -50,13 +50,13 @@ func LoginTelex(c *gin.Context) {
 
 	if formattedMessage == "/start-mail" {
 		if username == "" || email == "" || password == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"message": "Login failed. Ensure username, email and password are set.", "status": "error", "username": "Automated Email Service", "event_name": "Handling Emails"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Login failed. Ensure username, email and password are set.", "status": "error", "username": "Automated Email Service", "event_name": "Handling Emails"})
 			return
 		}
 
 		conn, err := ConnectToImapWithPassword(email, password)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"message": "Authentication failed " + err.Error(), "status": "error", "username": "Automated Email Service", "event_name": "Handling Emails"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed " + err.Error(), "status": "error", "username": "Automated Email Service", "event_name": "Handling Emails"})
 			return
 		}
 		defer conn.Logout()
@@ -67,7 +67,7 @@ func LoginTelex(c *gin.Context) {
 		log.Println("Email monitoring service started successfully.")
 		c.JSON(http.StatusOK, gin.H{"status": "success", "message": "Login successful. Email monitoring started. New inbox mails would receive automated responses.", "username": "Automated Email Service", "event_name": "Handling Emails"})
 	} else {
-		log.Println("Type a message to start email monitoring service.")
-		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "Login successful. However, you need to type /start-mail to start email monitoring service.", "username": "Automated Email Service", "event_name": "Handling Emails"})
+		log.Println("Type /start-mail to start email monitoring service.")
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "error": "Type /start-mail to start email monitoring service.", "username": "Automated Email Service", "event_name": "Handling Emails"})
 	}
 }
