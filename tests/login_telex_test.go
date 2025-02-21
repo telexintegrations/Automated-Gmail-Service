@@ -12,12 +12,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func mockConnectToImapWithPassword(email, password string) (string, error) {
-	if email == "valid@example.com" && password == "password123" {
-		return "mock_connection", nil
-	}
-	return "", assert.AnError
-}
+// func mockConnectToImapWithPassword(email, password string) (string, error) {
+// 	if email == "valid@gmail.com" && password == "password123" {
+// 		return "mock_connection", nil
+// 	}
+// 	return "", assert.AnError
+// }
 
 func TestLoginTelex_Success(t *testing.T) {
 	gin.SetMode(gin.TestMode)
@@ -28,7 +28,7 @@ func TestLoginTelex_Success(t *testing.T) {
 		"message": "Start monitoring",
 		"settings": []map[string]any{
 			{"label": "username", "type": "text", "required": true, "default": "testuser"},
-			{"label": "email", "type": "text", "required": true, "default": "valid@example.com"},
+			{"label": "email", "type": "text", "required": true, "default": "valid@gmail.com"},
 			{"label": "password", "type": "text", "required": true, "default": "password123"},
 		},
 	}
@@ -95,7 +95,7 @@ func TestLoginTelex_AuthFailure(t *testing.T) {
 		"message": "Start monitoring",
 		"settings": []map[string]any{
 			{"label": "username", "type": "text", "required": true, "default": "testuser"},
-			{"label": "email", "type": "text", "required": true, "default": "invalid@example.com"},
+			{"label": "email", "type": "text", "required": true, "default": "invalid@gmail.com"},
 			{"label": "password", "type": "text", "required": true, "default": "wrongpassword"},
 		},
 	}
@@ -120,7 +120,7 @@ func TestLoginTelex_MissingMessage(t *testing.T) {
 	requestBody := map[string]any{
 		"settings": []map[string]any{
 			{"label": "username", "type": "text", "required": true, "default": "testuser"},
-			{"label": "email", "type": "text", "required": true, "default": "valid@example.com"},
+			{"label": "email", "type": "text", "required": true, "default": "valid@gmail.com"},
 			{"label": "password", "type": "text", "required": true, "default": "password123"},
 		},
 	}
