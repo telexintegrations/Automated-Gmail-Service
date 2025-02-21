@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"log"
 	"time"
 )
@@ -23,7 +22,7 @@ func EmailNoAuthHandler(email string, password string, username string) {
 		}
 
 		ids, err := CheckNewEmails(c, lastUID)
-		fmt.Printf("Found mails with ids: %v\n", ids)
+		log.Printf("Found mails with ids: %v\n", ids)
 
 		if err != nil {
 			log.Println("Error checking mails:", err)
@@ -32,10 +31,10 @@ func EmailNoAuthHandler(email string, password string, username string) {
 		}
 
 		if len(ids) == 0 {
-			fmt.Println("No new emails found")
+			log.Println("No new emails found")
 		} else {
 			senders, err := FetchEmailSender(c, ids)
-			fmt.Printf("senders: %v\n", senders)
+			log.Printf("senders: %v\n", senders)
 			if err != nil {
 				log.Println("Error fetching mail sender:", err)
 				time.Sleep(time.Second * 10)
@@ -55,6 +54,6 @@ func EmailNoAuthHandler(email string, password string, username string) {
 		}
 
 		time.Sleep(time.Minute * 1)
-		fmt.Println("Sleeping for one minute")
+		log.Println("Sleeping for one minute")
 	}
 }
