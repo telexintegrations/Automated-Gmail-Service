@@ -45,7 +45,10 @@ func LoginTelex(c *gin.Context) {
 	message := loginReq.Message
 	log.Println("Message received: ", message)
 
-	if message != "" {
+	var formattedMessage string = StripHTMLTags(message)
+	log.Println("Formatted Message received: ", formattedMessage)
+
+	if formattedMessage == "/start-mail" {
 		if username == "" || email == "" || password == "" {
 			c.JSON(http.StatusBadRequest, gin.H{"message": "Login failed. Ensure username, email and password are set.", "status": "error", "username": "Automated Email Service", "event_name": "Handling Emails"})
 			return
@@ -62,9 +65,9 @@ func LoginTelex(c *gin.Context) {
 
 		log.Println("User logged in: ", email)
 		log.Println("Email monitoring service started successfully.")
-		c.JSON(http.StatusOK, gin.H{"message": "Login successful. Email monitoring started. New inbox mails would receive automated responses.", "username": "Automated Email Service", "status": "success", "event_name": "Handling Emails"})
+		c.JSON(http.StatusOK, gin.H{"status": "success", "message": "Login successful. Email monitoring started. New inbox mails would receive automated responses.", "username": "Automated Email Service", "event_name": "Handling Emails"})
 	} else {
 		log.Println("Type a message to start email monitoring service.")
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Login successful. Type a message to start email monitoring service.", "username": "Automated Email Service", "status": "success", "event_name": "Handling Emails"})
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "Login successful. However, you need to type /start-mail to start email monitoring service.", "username": "Automated Email Service", "event_name": "Handling Emails"})
 	}
 }
