@@ -31,7 +31,7 @@ func sendWebhookNotification(payload gin.H, webhook string) {
 	if webhook == "" {
 		log.Println("No webhook URL provided, skipping notification.")
 	} else {
-		client := &http.Client{Timeout: 15 * time.Second}
+		client := &http.Client{Timeout: 25 * time.Second}
 		req, err := http.NewRequest("POST", webhook, bytes.NewBuffer(jsonData))
 		if err != nil {
 			log.Println("Error creating webhook request:", err)
