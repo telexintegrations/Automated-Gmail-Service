@@ -3,10 +3,12 @@ package handlers
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"sync"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 type TelexRequestBody struct {
@@ -21,37 +23,41 @@ type Setting struct {
 	Default  string `json:"default"`
 }
 
+var once sync.Once
+
 func sendWebhookNotification(payload gin.H, webhook string) {
-	jsonData, err := json.Marshal(payload)
-	if err != nil {
-		log.Println("Error encoding JSON:", err)
-		return
-	}
-
-	if webhook == "" {
-		log.Println("No webhook URL provided, skipping notification.")
-	} else {
-		client := &http.Client{Timeout: 25 * time.Second}
-		req, err := http.NewRequest("POST", webhook, bytes.NewBuffer(jsonData))
+	once.Do(func() {
+		jsonData, err := json.Marshal(payload)
 		if err != nil {
-			log.Println("Error creating webhook request:", err)
+			log.Println("Error encoding JSON:", err)
 			return
 		}
-		req.Header.Set("Content-Type", "application/json")
 
-		resp, err := client.Do(req)
-		if err != nil {
-			log.Println("Error sending webhook request:", err)
-			return
-		}
-		defer resp.Body.Close()
+		if webhook == "" {
+			log.Println("No webhook URL provided, skipping notification.")
+		} else {
+			client := &http.Client{Timeout: 25 * time.Second}
+			req, err := http.NewRequest("POST", webhook, bytes.NewBuffer(jsonData))
+			if err != nil {
+				log.Println("Error creating webhook request:", err)
+				return
+			}
+			req.Header.Set("Content-Type", "application/json")
 
-		if resp.StatusCode >= 400 {
-			log.Println("Webhook request failed with status:", resp.Status)
-			return
+			resp, err := client.Do(req)
+			if err != nil {
+				log.Println("Error sending webhook request:", err)
+				return
+			}
+			defer resp.Body.Close()
+
+			if resp.StatusCode >= 400 {
+				log.Println("Webhook request failed with status:", resp.Status)
+				return
+			}
+			log.Println("Webhook notification sent successfully. Status Code:", resp.StatusCode)
 		}
-		log.Println("Webhook notification sent successfully. Status Code:", resp.StatusCode)
-	}
+	})
 }
 
 func LoginTelex(c *gin.Context) {
