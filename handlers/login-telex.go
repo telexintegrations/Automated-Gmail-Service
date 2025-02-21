@@ -68,6 +68,6 @@ func LoginTelex(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"status": "success", "message": "Login successful. Email monitoring started. New inbox mails would receive automated responses.", "username": "Automated Email Service", "event_name": "Handling Emails"})
 	} else {
 		log.Println("Type /start-mail to start email monitoring service.")
-		c.JSON(http.StatusOK, gin.H{"status": "success", "message": "Type /start-mail to start email monitoring service.", "username": "Automated Email Service", "event_name": "Handling Emails"})
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "error": "Type /start-mail to start email monitoring service.", "username": "Automated Email Service", "event_name": "Handling Emails"})
 	}
 }
