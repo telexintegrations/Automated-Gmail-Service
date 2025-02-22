@@ -120,7 +120,7 @@ func LoginTelex(c *gin.Context) {
 		return
 	} else if formattedMessage == "Type /start-mail to start email monitoring service." {
 		return
-	} else if formattedMessage == "Formatted Message received:  Login successful. Email monitoring started. New inbox mails would receive automated responses." {
+	} else if formattedMessage == "Login successful. Email monitoring started. New inbox mails would receive automated responses." {
 		return
 	} else if formattedMessage == "" {
 		log.Println("Type /start-mail to start email monitoring service.")
