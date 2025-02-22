@@ -48,6 +48,7 @@ POST /target_url
   "username": "Your Name",
   "email": "your-email@gmail.com",
   "password": "your-app-password"
+  "webhook": "your-channel-webhook"
 }
 ```
 
@@ -103,6 +104,7 @@ https://automated-gmail-service.onrender.com/integration
 Username: YourName
 Email: youremail@gmail.com
 Password: Your-Gmail-app-password
+Webhook: Your-Channel-Webhook
 ```
 Then, click on **'Save Settings'**
 
