@@ -123,6 +123,11 @@ func LoginTelex(c *gin.Context) {
 		sendWebhookNotification(response, webhook, &once)
 		c.JSON(http.StatusOK, response)
 		return
+	} else if formattedMessage == "Type /start-mail to start email monitoring service." {
+		log.Println("Type /start-mail to start email monitoring service.")
+		response := gin.H{"status": "error", "message": "Type /start-mail to start email monitoring service.", "username": "Automated Email Service", "event_name": "Handling Emails"}
+		c.JSON(http.StatusBadRequest, response)
+		return
 	} else {
 		log.Println("Type /start-mail to start email monitoring service.")
 		response := gin.H{"status": "error", "message": "Type /start-mail to start email monitoring service.", "username": "Automated Email Service", "event_name": "Handling Emails"}
