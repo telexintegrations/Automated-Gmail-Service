@@ -33,6 +33,7 @@ func sendWebhookNotification(payload gin.H, webhook string, once *sync.Once) {
 
 		if webhook == "" {
 			log.Println("No webhook URL provided, skipping notification.")
+			return
 		} else {
 			client := &http.Client{Timeout: 25 * time.Second}
 			req, err := http.NewRequest("POST", webhook, bytes.NewBuffer(jsonData))
@@ -54,6 +55,7 @@ func sendWebhookNotification(payload gin.H, webhook string, once *sync.Once) {
 				return
 			}
 			log.Println("Webhook notification sent successfully. Status Code:", resp.StatusCode)
+			return
 		}
 	})
 }
