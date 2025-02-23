@@ -127,4 +127,5 @@ with the following payload parameters:
 
 ##### Or a response like this(with the error described) if you have an error:
 ![Success Response](images/ResponseImage2.png)
+
 ![Success Response](images/ResponseImage1.png)
