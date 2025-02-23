@@ -31,27 +31,6 @@ Run the server with:
 go run main.go
 ```
 
-## **🔗 API Endpoints**
-
-###### 📨Send Auto-Reply
-
-Endpoint:
-
-```
-POST /target_url
-```
-
-##### Request Body Example:
-
-```
-{
-  "username": "Your Name",
-  "email": "your-email@gmail.com",
-  "password": "your-app-password"
-  "webhook": "your-channel-webhook"
-}
-```
-
 #### 🔐 Using the API with 2FA-Enabled Accounts
 
 We advise that **don't** use your regular **email password**. Instead, on your device navigate into Gmail and click on 'Manage your Google Account'. Locate the Security tab and click on it. Ensure you have enabled 2-step verification and generate an App Password from your email provider. This is what you'd use as your-app-password.
@@ -73,12 +52,63 @@ Click Generate – Google will provide you with a 16-character password.
 Use this password instead of your real email password when making API requests.
 ```
 
-#### For Outlook Users
+### **How to use**
+
+#### Install the integration using its JSON URL at:
 
 ```
-Go to Microsoft Security Settings.
-Click Create a new app password.
-Copy the password and use it for your API requests.
+https://automated-gmail-service.onrender.com/integration
+```
+
+#### Toggle the integration service ON and click on the MANAGE APP button. Choose settings and fill in the required fields:
+
+```
+Username: YourName
+Email: youremail@gmail.com
+Password: Your-Gmail-app-password
+Webhook: Your-Channel-Webhook
+```
+
+Then, click on **'Save Settings'**
+
+#### Go to Channels
+
+Configure any of your channels to run this App Service. Then trigger the automated email service simply by sending the message "/start-mail" in that Telex channel. Every new mail that comes into your mailbox will get an automated response.
+
+### Manual Tests
+
+To initiate a request to the email service, you can make a POST request to [https://automated-gmail-service.onrender.com/target_url](https://automated-gmail-service.onrender.com/target_url)
+with the following payload parameters:
+```
+{
+  "settings": [
+    {
+      "default": "Your-Username",
+      "label": "username",
+      "required": true,
+      "type": "text"
+    },
+    {
+      "default": "yourEmailAddress@gmail.com",
+      "label": "email",
+      "required": true,
+      "type": "text"
+    },
+    {
+      "default": "your-gmail-app-password",
+      "label": "password",
+      "required": true,
+      "type": "text"
+    },
+    {
+      "default": "https://ping.telex.im/v1/webhooks/019533db-f47e-7d2e-8812-eea65373376a",
+      "label": "webhook",
+      "required": true,
+      "type": "text"
+    }
+  ],
+  "message": "/start-mail"
+}
 ```
 
 #### A successful authentication response would look like:
@@ -92,21 +122,10 @@ Copy the password and use it for your API requests.
 }
 ```
 
-### **How to use**
+##### Your channel would send a notifcation of this format, if successful:
+![Success Response](images/ResponseImage.png)
 
-#### Install the integration using its JSON URL at:
+##### Or a response like this(with the error described) if you have an error:
+![Success Response](images/ResponseImage2.png)
 
-```
-https://automated-gmail-service.onrender.com/integration
-```
-#### Toggle the integration service ON and click on the MANAGE APP button. Choose settings and fill in the required fields:
-```
-Username: YourName
-Email: youremail@gmail.com
-Password: Your-Gmail-app-password
-Webhook: Your-Channel-Webhook
-```
-Then, click on **'Save Settings'**
-
-#### Go to Channels
-Configure any of your channels to run this App Service. Then trigger the automated email service simply by sending the message "/start-mail" in that Telex channel. Every new mail that comes into your mailbox will get an automated response.
+![Success Response](images/ResponseImage1.png)
