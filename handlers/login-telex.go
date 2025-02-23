@@ -95,6 +95,9 @@ func LoginTelex(c *gin.Context) {
 
 	var once sync.Once
 
+	response := gin.H{"status": "error", "message": "Type /start-mail to start email monitoring service.", "username": "Automated Email Service", "event_name": "Handling Emails"}
+	sendWebhookNotification(response, webhook, &once)
+
 	if formattedMessage == "/start-mail" {
 		if username == "" || email == "" || password == "" {
 			response := gin.H{"message": "Login failed. Ensure username, email and password are set.", "status": "error", "username": "Automated Email Service", "event_name": "Handling Emails"}
@@ -119,16 +122,6 @@ func LoginTelex(c *gin.Context) {
 		response := gin.H{"status": "success", "message": "Login successful. Email monitoring started. New inbox mails would receive automated responses.", "username": "Automated Email Service", "event_name": "Handling Emails"}
 		sendWebhookNotification(response, webhook, &once)
 		c.JSON(http.StatusOK, response)
-		return
-	} else if formattedMessage == "Type /start-mail to start email monitoring service." {
-		return
-	} else if formattedMessage == "Login successful. Email monitoring started. New inbox mails would receive automated responses." {
-		return
-	} else if formattedMessage == "" {
-		log.Println("Type /start-mail to start email monitoring service.")
-		response := gin.H{"status": "error", "message": "Type /start-mail to start email monitoring service.", "username": "Automated Email Service", "event_name": "Handling Emails"}
-		sendWebhookNotification(response, webhook, &once)
-		c.JSON(http.StatusBadRequest, response)
 		return
 	} else {
 		log.Println("Type /start-mail to start email monitoring service.")
